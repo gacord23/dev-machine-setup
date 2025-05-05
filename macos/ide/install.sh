@@ -96,6 +96,36 @@ install_webstorm() {
     fi
 }
 
+install_intellij() {
+    print_status "Checking for IntelliJ IDEA..."
+    if ! command_exists idea; then
+        print_status "Installing IntelliJ IDEA..."
+        brew install --cask intellij-idea
+    else
+        print_status "IntelliJ IDEA already installed"
+    fi
+}
+
+install_pycharm() {
+    print_status "Checking for PyCharm..."
+    if ! command_exists pycharm; then
+        print_status "Installing PyCharm..."
+        brew install --cask pycharm
+    else
+        print_status "PyCharm already installed"
+    fi
+}
+
+install_sublime_text() {
+    print_status "Checking for Sublime Text..."
+    if ! command_exists subl; then
+        print_status "Installing Sublime Text..."
+        brew install --cask sublime-text
+    else
+        print_status "Sublime Text already installed"
+    fi
+}
+
 install_lazyvim_dependencies() {
     print_status "Installing LazyVim dependencies..."
     
@@ -174,12 +204,15 @@ install_nerd_fonts
 configure_terminal
 
 # Get user selections
-echo -e "\n${BOLD}Select code editors to install:${NC}"
+echo -e "\n${BOLD}Select IDEs and code editors to install:${NC}"
 echo "1) VSCode"
 echo "2) Cursor"
 echo "3) WebStorm"
 echo "4) LazyVim"
-echo "5) All"
+echo "5) IntelliJ IDEA"
+echo "6) PyCharm"
+echo "7) Sublime Text"
+echo "8) All"
 echo
 
 read -p "Enter your choices (comma-separated, e.g., 1,3,4): " choices
@@ -192,11 +225,17 @@ for choice in "${selected[@]}"; do
         2) install_cursor ;;
         3) install_webstorm ;;
         4) install_lazyvim ;;
-        5)
+        5) install_intellij ;;
+        6) install_pycharm ;;
+        7) install_sublime_text ;;
+        8)
             install_vscode
             install_cursor
             install_webstorm
             install_lazyvim
+            install_intellij
+            install_pycharm
+            install_sublime_text
             ;;
         *)
             print_warning "Invalid choice: $choice"
@@ -208,5 +247,5 @@ print_status "IDE installation complete!"
 print_status "Next steps:"
 print_status "  - For LazyVim: Run 'nvim' to complete the setup and wait for plugins to install"
 print_status "  - For VSCode: Install your preferred extensions"
-print_status "  - For WebStorm: Configure your preferred settings"
-print_status "  - Restart Terminal.app to apply the new font settings" 
+print_status "  - For WebStorm/IntelliJ/PyCharm: Configure your preferred settings"
+print_status "  - Restart your terminal to apply the new font settings" 
