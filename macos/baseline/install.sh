@@ -26,6 +26,56 @@ install_homebrew() {
     fi
 }
 
+install_python() {
+    print_status "Checking for Python installations..."
+    
+    # Install pyenv if not present
+    if ! command_exists pyenv; then
+        print_status "Installing pyenv..."
+        brew install pyenv
+        # Add pyenv to shell
+        echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+        echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+        echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+        # Reload shell configuration
+        eval "$(pyenv init -)"
+    fi
+    
+    # Install Python 2.7.18 (last 2.7 release) if not present
+    if ! pyenv versions | grep -q "2.7.18"; then
+        print_status "Installing Python 2.7.18..."
+        pyenv install 2.7.18
+    fi
+    
+    # Install Python 3.11 if not present
+    if ! pyenv versions | grep -q "3.11"; then
+        print_status "Installing Python 3.11..."
+        pyenv install 3.11.7
+    fi
+    
+    # Set Python 2.7.18 as the default 'python' command
+    print_status "Setting Python 2.7.18 as default..."
+    pyenv global 2.7.18
+    
+    # Set npm_config_python to point to Python 2.7
+    print_status "Configuring npm to use Python 2.7..."
+    if ! grep -q "npm_config_python" ~/.zshrc; then
+        echo 'export npm_config_python="$(pyenv which python)"' >> ~/.zshrc
+    fi
+    
+    # Install pip for Python 2.7 if not present
+    if ! command_exists pip; then
+        print_status "Installing pip for Python 2.7..."
+        curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+        python get-pip.py
+        rm get-pip.py
+    fi
+    
+    # Install required packages for Python 2.7
+    print_status "Installing Python 2.7 packages..."
+    pip install --upgrade setuptools wheel
+}
+
 install_volta() {
     print_status "Installing Volta..."
     if ! command_exists volta; then
@@ -39,6 +89,7 @@ install_volta() {
 # Main execution
 install_xcode
 install_homebrew
+install_python
 install_volta
 
 print_status "Baseline setup complete!"

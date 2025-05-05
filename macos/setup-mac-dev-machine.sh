@@ -17,8 +17,9 @@ display_menu() {
     echo "3) Docker (Docker Desktop, Colima, Kubernetes tools)"
     echo "4) IDE (VSCode, Cursor, WebStorm, LazyVim)"
     echo "5) Terminal (iTerm2, Warp, zsh + oh-my-zsh)"
-    echo "6) All Categories"
-    echo "7) Exit"
+    echo "6) Imaging Tools (Vips, glib)"
+    echo "7) All Categories"
+    echo "8) Exit"
     echo
 }
 
@@ -41,7 +42,7 @@ while true; do
     read -p "Enter your choice (comma-separated for multiple, e.g., 1,3,5): " choices
     
     # Handle exit
-    if [[ "$choices" == "7" ]]; then
+    if [[ "$choices" == "8" ]]; then
         print_status "Exiting setup"
         exit 0
     fi
@@ -55,13 +56,15 @@ while true; do
             3) run_category "docker" ;;
             4) run_category "ide" ;;
             5) run_category "terminal" ;;
-            6)
+            6) run_category "imaging" ;;
+            7)
                 print_status "Installing all categories..."
                 run_category "baseline"
                 run_category "git"
                 run_category "docker"
                 run_category "ide"
                 run_category "terminal"
+                run_category "imaging"
                 ;;
             *)
                 print_warning "Invalid choice: $choice"
@@ -84,4 +87,5 @@ print_status "  - If you installed Colima, you can manage it using the 'colima' 
 print_status "  - If you installed LazyVim, run 'nvim' to complete the setup"
 print_status "  - If you installed oh-my-zsh, you may want to customize your .zshrc"
 print_status "  - If you installed Git tools, make sure to configure your Git identity"
-print_status "  - If you installed GitHub CLI, authenticate with 'gh auth login'" 
+print_status "  - If you installed GitHub CLI, authenticate with 'gh auth login'"
+print_status "  - If you installed imaging tools, run 'source ~/.zshrc' to apply the new environment variables" 
