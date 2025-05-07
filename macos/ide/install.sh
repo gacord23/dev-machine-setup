@@ -248,4 +248,12 @@ print_status "Next steps:"
 print_status "  - For LazyVim: Run 'nvim' to complete the setup and wait for plugins to install"
 print_status "  - For VSCode: Install your preferred extensions"
 print_status "  - For WebStorm/IntelliJ/PyCharm: Configure your preferred settings"
-print_status "  - Restart your terminal to apply the new font settings" 
+print_status "  - Restart your terminal to apply the new font settings"
+
+# Check if Volta is properly installed
+if [ ! -d "$HOME/.volta" ]; then
+    print_warning "Volta is not properly installed. Please check the output of 'ls -la ~/.volta'"
+fi
+
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH" 

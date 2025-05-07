@@ -19,7 +19,9 @@ install_homebrew() {
         print_status "Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # Add Homebrew to PATH
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        if [[ -f ~/.zprofile ]]; then
+            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        fi
         eval "$(/opt/homebrew/bin/brew shellenv)"
     else
         print_status "Homebrew already installed"
@@ -34,9 +36,11 @@ install_python() {
         print_status "Installing pyenv..."
         brew install pyenv
         # Add pyenv to shell
-        echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
-        echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
-        echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+        if [[ -f ~/.zshrc ]]; then
+            echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+            echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+            echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+        fi
         # Reload shell configuration
         eval "$(pyenv init -)"
     fi
@@ -59,7 +63,7 @@ install_python() {
     
     # Set npm_config_python to point to Python 2.7
     print_status "Configuring npm to use Python 2.7..."
-    if ! grep -q "npm_config_python" ~/.zshrc; then
+    if [[ -f ~/.zshrc ]] && ! grep -q "npm_config_python" ~/.zshrc; then
         echo 'export npm_config_python="$(pyenv which python)"' >> ~/.zshrc
     fi
     
@@ -80,7 +84,18 @@ install_volta() {
     print_status "Installing Volta..."
     if ! command_exists volta; then
         curl https://get.volta.sh | bash
-        source ~/.zshrc
+        
+        # Add Volta to PATH for current shell
+        export VOLTA_HOME="$HOME/.volta"
+        export PATH="$VOLTA_HOME/bin:$PATH"
+        
+        # Add Volta to shell configuration
+        if [[ -f ~/.zshrc ]]; then
+            if ! grep -q "VOLTA_HOME" ~/.zshrc; then
+                echo 'export VOLTA_HOME="$HOME/.volta"' >> ~/.zshrc
+                echo 'export PATH="$VOLTA_HOME/bin:$PATH"' >> ~/.zshrc
+            fi
+        fi
     else
         print_status "Volta already installed"
     fi
@@ -93,4 +108,5 @@ install_python
 install_volta
 
 print_status "Baseline setup complete!"
-print_status "Please ensure Xcode Command Line Tools installation is complete before proceeding with other components." 
+print_status "Please ensure Xcode Command Line Tools installation is complete before proceeding with other components."
+print_status "Note: You may need to restart your terminal or run 'source ~/.zshrc' to fully initialize Volta." 
