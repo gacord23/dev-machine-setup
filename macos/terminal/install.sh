@@ -120,8 +120,13 @@ for choice in "${selected[@]}"; do
     esac
 done
 
+# Configure ZSH with custom prompt
+print_status "Configuring ZSH with custom prompt..."
+source "$(dirname "$0")/zsh-config.sh"
+
 print_status "Terminal emulator installation complete!"
 print_status "Next steps:"
 print_status "  - For Terminal.app: Restart to apply the new font settings"
 print_status "  - For iTerm2: Configure your preferred theme and settings"
-print_status "  - For Warp: Configure your preferred theme and settings" 
+print_status "  - For Warp: Configure your preferred theme and settings"
+print_status "  - Your custom ZSH prompt has been configured. Run 'source ~/.zshrc' to apply changes" 
