@@ -101,6 +101,14 @@ install_volta() {
     fi
 }
 
+# Ensure jq is installed
+if ! command_exists jq; then
+    print_status "Installing jq..."
+    brew install jq
+else
+    print_status "jq already installed"
+fi
+
 # Main execution
 install_xcode
 install_homebrew

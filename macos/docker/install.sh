@@ -22,6 +22,26 @@ install_colima() {
     else
         print_status "Colima already installed"
     fi
+
+    # Ensure Docker CLI and Compose are installed
+    if ! command_exists docker; then
+        print_status "Installing Docker CLI and Compose plugin..."
+        brew install docker docker-compose
+    else
+        print_status "Docker CLI already installed"
+    fi
+
+    # Ensure Docker Compose plugin is discoverable by Docker CLI
+    DOCKER_CONFIG_FILE="$HOME/.docker/config.json"
+    if command -v jq >/dev/null 2>&1; then
+      if [ -f "$DOCKER_CONFIG_FILE" ]; then
+        jq '. + {cliPluginsExtraDirs: ["/opt/homebrew/lib/docker/cli-plugins"]}' "$DOCKER_CONFIG_FILE" > "$DOCKER_CONFIG_FILE.tmp" && mv "$DOCKER_CONFIG_FILE.tmp" "$DOCKER_CONFIG_FILE"
+      else
+        echo '{"cliPluginsExtraDirs": ["/opt/homebrew/lib/docker/cli-plugins"]}' > "$DOCKER_CONFIG_FILE"
+      fi
+    else
+      print_warning 'Please install jq to update Docker config for Compose plugin discovery.'
+    fi
 }
 
 install_kubernetes_tools() {

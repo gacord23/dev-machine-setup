@@ -73,6 +73,32 @@ install_volta() {
     fi
 }
 
+# Ensure jq is installed
+if ! command_exists jq; then
+    print_status "Installing jq..."
+    case $(detect_package_manager) in
+        apt)
+            sudo apt-get update
+            sudo apt-get install -y jq
+            ;;
+        dnf)
+            sudo dnf install -y jq
+            ;;
+        yum)
+            sudo yum install -y jq
+            ;;
+        pacman)
+            sudo pacman -S --noconfirm jq
+            ;;
+        *)
+            print_error "Unsupported package manager for jq installation"
+            exit 1
+            ;;
+    esac
+else
+    print_status "jq already installed"
+fi
+
 # Main execution
 install_build_essentials
 install_volta

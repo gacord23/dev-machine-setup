@@ -50,6 +50,19 @@ install_colima() {
     esac
     print_status "Starting Colima..."
     colima start
+
+    # Ensure Docker CLI and Compose plugin are installed
+    case $(detect_package_manager) in
+        apt)
+            sudo apt-get install -y docker-ce-cli docker-compose-plugin
+            ;;
+        dnf)
+            sudo dnf install -y docker-ce-cli docker-compose-plugin
+            ;;
+        pacman)
+            sudo pacman -S --noconfirm docker docker-compose
+            ;;
+    esac
 }
 
 install_kubernetes_tools() {
