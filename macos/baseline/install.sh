@@ -163,10 +163,17 @@ else
     print_status "libvips already installed"
 fi
 
-# Optionally export Homebrew include/lib paths for native builds
-if [[ "$(brew --prefix)" != "" ]]; then
-    export CPLUS_INCLUDE_PATH="$(brew --prefix)/include:$CPLUS_INCLUDE_PATH"
-    export LIBRARY_PATH="$(brew --prefix)/lib:$LIBRARY_PATH"
+# Always (re-)export Homebrew include/lib/pkgconfig paths for native builds
+BREW_PREFIX="$(brew --prefix)"
+export CPLUS_INCLUDE_PATH="$BREW_PREFIX/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
+export LIBRARY_PATH="$BREW_PREFIX/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
+export PKG_CONFIG_PATH="$BREW_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+
+# Optionally, add to ~/.zshrc if not already present
+if [[ -f ~/.zshrc ]]; then
+  grep -q 'CPLUS_INCLUDE_PATH' ~/.zshrc || echo "export CPLUS_INCLUDE_PATH=\"$BREW_PREFIX/include:\$CPLUS_INCLUDE_PATH\"" >> ~/.zshrc
+  grep -q 'LIBRARY_PATH' ~/.zshrc || echo "export LIBRARY_PATH=\"$BREW_PREFIX/lib:\$LIBRARY_PATH\"" >> ~/.zshrc
+  grep -q 'PKG_CONFIG_PATH' ~/.zshrc || echo "export PKG_CONFIG_PATH=\"$BREW_PREFIX/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> ~/.zshrc
 fi
 
 # Main execution
