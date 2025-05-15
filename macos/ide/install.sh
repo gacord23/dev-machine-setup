@@ -256,4 +256,11 @@ if [ ! -d "$HOME/.volta" ]; then
 fi
 
 export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH" 
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+ln -s "$(pyenv which python3)" "$HOME/.pyenv/shims/python"
+pyenv rehash
+
+which python
+python --version
+python -c "from distutils.version import StrictVersion; print('distutils is available')" 
