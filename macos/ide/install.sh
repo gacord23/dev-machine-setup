@@ -255,12 +255,6 @@ if [ ! -d "$HOME/.volta" ]; then
     print_warning "Volta is not properly installed. Please check the output of 'ls -la ~/.volta'"
 fi
 
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-
-ln -s "$(pyenv which python3)" "$HOME/.pyenv/shims/python"
-pyenv rehash
-
 which python
 python --version
 python -c "from distutils.version import StrictVersion; print('distutils is available')" 

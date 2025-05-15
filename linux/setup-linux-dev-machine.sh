@@ -16,16 +16,18 @@ run_category() {
     fi
 }
 
-# Main menu
+# Always run baseline first
+bash "$(dirname "$0")/baseline/install.sh"
+
+# Present menu for other categories (excluding baseline)
 while true; do
     print_status "Select installation categories:"
-    echo "1) Baseline (Build essentials, curl, git)"
-    echo "2) Git (Git, LazyGit, GitHub CLI, Git LFS, GitKraken)"
-    echo "3) Docker (Docker Engine or Colima)"
-    echo "4) IDE (VSCode, Cursor, WebStorm, LazyVim)"
-    echo "5) Terminal (Terminal emulators, shell configuration)"
-    echo "6) All Categories"
-    echo "7) Exit"
+    echo "1) Git (Git, LazyGit, GitHub CLI, Git LFS, GitKraken)"
+    echo "2) Docker (Docker Engine or Colima)"
+    echo "3) IDE (VSCode, Cursor, WebStorm, LazyVim)"
+    echo "4) Terminal (Terminal emulators, shell configuration)"
+    echo "5) All Categories"
+    echo "6) Exit"
     echo "Enter your choices as comma-separated numbers (e.g., 1,3,5):"
     read -p "Your choices: " choices
 
@@ -36,28 +38,24 @@ while true; do
     for choice in "${CHOICE_ARRAY[@]}"; do
         case $choice in
             1)
-                run_category "baseline"
-                ;;
-            2)
                 run_category "git"
                 ;;
-            3)
+            2)
                 run_category "docker"
                 ;;
-            4)
+            3)
                 run_category "ide"
                 ;;
+            4)
+                run_category "terminal"
+                ;;
             5)
+                run_category "git"
+                run_category "docker"
+                run_category "ide"
                 run_category "terminal"
                 ;;
             6)
-                run_category "baseline"
-                run_category "git"
-                run_category "docker"
-                run_category "ide"
-                run_category "terminal"
-                ;;
-            7)
                 print_status "Exiting..."
                 exit 0
                 ;;
@@ -76,5 +74,8 @@ while true; do
     print_status "  - If you installed oh-my-zsh, you may want to customize your .zshrc"
     print_status "  - If you installed Git tools, make sure to configure your Git identity"
     print_status "  - If you installed GitHub CLI, authenticate with 'gh auth login'"
+
+    # Always run finishup/verify.sh at the end
+    bash "$(dirname "$0")/finishup/verify.sh"
     exit 0
 done 

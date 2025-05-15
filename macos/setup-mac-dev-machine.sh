@@ -9,6 +9,9 @@ check_os "Darwin"
 print_status "Detected macOS"
 print_status "Starting macOS Development Machine Setup"
 
+# Always run baseline first
+bash "$(dirname "$0")/baseline/install.sh"
+
 # Function to display menu
 display_menu() {
     echo -e "\n${BOLD}Available Categories:${NC}"
@@ -77,6 +80,9 @@ while true; do
         break
     fi
 done
+
+# Always run finishup/verify.sh at the end
+bash "$(dirname "$0")/finishup/verify.sh"
 
 print_status "Setup complete!"
 print_status "Please review the output above for any warnings or errors."

@@ -86,52 +86,6 @@ install_warp() {
     fi
 }
 
-configure_zsh() {
-    print_status "Configuring zsh..."
-    if ! command_exists zsh; then
-        brew install zsh
-    fi
-
-    # Install thefuck
-    print_status "Installing thefuck..."
-    if ! command_exists thefuck; then
-        brew install thefuck
-    fi
-
-    if [ ! -d ~/.oh-my-zsh ]; then
-        print_status "Installing oh-my-zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
-        # Install zsh-autosuggestions
-        if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
-            git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-        fi
-
-        # Install zsh-syntax-highlighting
-        if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]; then
-            git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-        fi
-
-        # Update .zshrc with plugins and thefuck
-        if [ -f ~/.zshrc ]; then
-            # Add thefuck alias
-            echo 'eval $(thefuck --alias)' >> ~/.zshrc
-            # Update plugins
-            sed -i '' 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting thefuck)/' ~/.zshrc
-        fi
-    else
-        print_status "oh-my-zsh already installed"
-        # Add thefuck alias if not already present
-        if ! grep -q "thefuck --alias" ~/.zshrc; then
-            echo 'eval $(thefuck --alias)' >> ~/.zshrc
-        fi
-        # Add thefuck to plugins if not already present
-        if ! grep -q "thefuck" ~/.zshrc; then
-            sed -i '' 's/plugins=(git/plugins=(git thefuck/' ~/.zshrc
-        fi
-    fi
-}
-
 # Main execution
 print_status "Starting terminal emulator installation..."
 
@@ -165,10 +119,6 @@ for choice in "${selected[@]}"; do
             ;;
     esac
 done
-
-# Configure ZSH with custom prompt
-print_status "Configuring ZSH with custom prompt..."
-configure_zsh
 
 print_status "Terminal emulator installation complete!"
 print_status "Next steps:"

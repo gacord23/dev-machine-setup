@@ -295,16 +295,18 @@ function Run-Category {
     }
 }
 
-# Main menu
+# Always run baseline first
+& "$PSScriptRoot\baseline\install.ps1"
+
+# Present menu for other categories (excluding baseline)
 Write-Status "Windows Development Machine Setup"
 Write-Host "Available categories:"
-Write-Host "1) Baseline (Chocolatey, Volta)"
-Write-Host "2) Git (Git, LazyGit, GitHub CLI, Git LFS, GitKraken)"
-Write-Host "3) Docker (Docker Desktop, Kubernetes Tools)"
-Write-Host "4) IDE (VSCode, WebStorm, LazyVim)"
-Write-Host "5) Terminal (Windows Terminal, PowerShell Core)"
-Write-Host "6) All Categories"
-Write-Host "7) Exit"
+Write-Host "1) Git (Git, LazyGit, GitHub CLI, Git LFS, GitKraken)"
+Write-Host "2) Docker (Docker Desktop, Kubernetes Tools)"
+Write-Host "3) IDE (VSCode, WebStorm, LazyVim)"
+Write-Host "4) Terminal (Windows Terminal, PowerShell Core)"
+Write-Host "5) All Categories"
+Write-Host "6) Exit"
 Write-Host "Enter your choices as comma-separated numbers (e.g., 1,3):"
 $choices = Read-Host "Your choices"
 
@@ -314,19 +316,17 @@ $choiceArray = $choices -split ','
 # Process choices
 foreach ($choice in $choiceArray) {
     switch ($choice.Trim()) {
-        "1" { Run-Category "baseline" }
-        "2" { Run-Category "git" }
-        "3" { Run-Category "docker" }
-        "4" { Run-Category "ide" }
-        "5" { Run-Category "terminal" }
-        "6" {
-            Run-Category "baseline"
+        "1" { Run-Category "git" }
+        "2" { Run-Category "docker" }
+        "3" { Run-Category "ide" }
+        "4" { Run-Category "terminal" }
+        "5" {
             Run-Category "git"
             Run-Category "docker"
             Run-Category "ide"
             Run-Category "terminal"
         }
-        "7" {
+        "6" {
             Write-Status "Exiting setup"
             exit 0
         }
@@ -335,6 +335,9 @@ foreach ($choice in $choiceArray) {
         }
     }
 }
+
+# Always run finishup/verify.ps1 at the end
+& "$PSScriptRoot\finishup\verify.ps1"
 
 Write-Status "Setup complete!"
 Write-Status "Next steps:"
