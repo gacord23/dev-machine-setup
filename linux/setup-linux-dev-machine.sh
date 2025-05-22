@@ -41,12 +41,6 @@ while getopts "u" opt; do
     esac
 done
 
-# Run baseline first and only once (but only for installation, not uninstallation)
-if [ "$UNINSTALL" = false ]; then
-    print_status "Running baseline installation..."
-    bash "$(dirname "$0")/baseline/install.sh"
-fi
-
 # Present menu for other categories (excluding baseline)
 while true; do
     if [ "$UNINSTALL" = true ]; then
@@ -65,6 +59,12 @@ while true; do
 
     # Convert comma-separated input to array
     IFS=',' read -ra CHOICE_ARRAY <<< "$choices"
+
+    # Run baseline first if this is an installation (not uninstall)
+    if [ "$UNINSTALL" = false ]; then
+        print_status "Running baseline installation..."
+        bash "$(dirname "$0")/baseline/install.sh"
+    fi
 
     # Process each choice
     for choice in "${CHOICE_ARRAY[@]}"; do
