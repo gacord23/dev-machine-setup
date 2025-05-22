@@ -75,15 +75,77 @@ install_cursor() {
             # Debian/Ubuntu
             print_status "Downloading Cursor AppImage..."
             wget https://download.cursor.sh/linux/appImage/x64/cursor-latest.AppImage -O /tmp/cursor.AppImage
+            if [ ! -f /tmp/cursor.AppImage ]; then
+                print_error "Failed to download Cursor AppImage"
+                return 1
+            fi
+            
+            print_status "Installing Cursor..."
             chmod +x /tmp/cursor.AppImage
             sudo mv /tmp/cursor.AppImage /usr/local/bin/cursor
+            
+            # Create desktop entry
+            print_status "Creating desktop entry..."
+            mkdir -p ~/.local/share/applications
+            cat > ~/.local/share/applications/cursor.desktop << EOF
+[Desktop Entry]
+Name=Cursor
+Comment=AI-first code editor
+Exec=/usr/local/bin/cursor %F
+Icon=cursor
+Terminal=false
+Type=Application
+Categories=Development;TextEditor;IDE;
+MimeType=text/plain;inode/directory;
+StartupWMClass=Cursor
+EOF
+            
+            # Create icon
+            print_status "Downloading icon..."
+            mkdir -p ~/.local/share/icons
+            wget https://raw.githubusercontent.com/getcursor/cursor/main/packages/renderer/assets/icon.png -O ~/.local/share/icons/cursor.png
+            
+            # Update desktop database
+            update-desktop-database ~/.local/share/applications
+            
             print_status "Cursor installed successfully"
         elif command_exists dnf; then
             # Fedora/RHEL
             print_status "Downloading Cursor AppImage..."
             wget https://download.cursor.sh/linux/appImage/x64/cursor-latest.AppImage -O /tmp/cursor.AppImage
+            if [ ! -f /tmp/cursor.AppImage ]; then
+                print_error "Failed to download Cursor AppImage"
+                return 1
+            fi
+            
+            print_status "Installing Cursor..."
             chmod +x /tmp/cursor.AppImage
             sudo mv /tmp/cursor.AppImage /usr/local/bin/cursor
+            
+            # Create desktop entry
+            print_status "Creating desktop entry..."
+            mkdir -p ~/.local/share/applications
+            cat > ~/.local/share/applications/cursor.desktop << EOF
+[Desktop Entry]
+Name=Cursor
+Comment=AI-first code editor
+Exec=/usr/local/bin/cursor %F
+Icon=cursor
+Terminal=false
+Type=Application
+Categories=Development;TextEditor;IDE;
+MimeType=text/plain;inode/directory;
+StartupWMClass=Cursor
+EOF
+            
+            # Create icon
+            print_status "Downloading icon..."
+            mkdir -p ~/.local/share/icons
+            wget https://raw.githubusercontent.com/getcursor/cursor/main/packages/renderer/assets/icon.png -O ~/.local/share/icons/cursor.png
+            
+            # Update desktop database
+            update-desktop-database ~/.local/share/applications
+            
             print_status "Cursor installed successfully"
         elif command_exists pacman; then
             # Arch Linux
@@ -93,6 +155,19 @@ install_cursor() {
         fi
     else
         print_status "Cursor already installed"
+    fi
+    
+    # Verify installation
+    if command_exists cursor; then
+        print_status "Verifying Cursor installation..."
+        cursor --version
+        if [ $? -eq 0 ]; then
+            print_status "Cursor is properly installed and working"
+        else
+            print_error "Cursor installation may be incomplete"
+        fi
+    else
+        print_error "Cursor installation failed"
     fi
 }
 
