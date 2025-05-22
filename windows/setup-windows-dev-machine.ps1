@@ -282,16 +282,27 @@ Write-Host "`nNeed help? Check the documentation for each tool or run the script
 # Function to run a category installation script
 function Run-Category {
     param (
-        [string]$category
+        [string]$Category,
+        [string]$Action
     )
     
-    $scriptPath = Join-Path $PSScriptRoot "$category\install.ps1"
+    $scriptPath = Join-Path $PSScriptRoot "$Category\install.ps1"
+    $uninstallScriptPath = Join-Path $PSScriptRoot "$Category\uninstall.ps1"
     
-    if (Test-Path $scriptPath) {
-        Write-Status "Running $category installation..."
-        & $scriptPath
+    if ($Action -eq "uninstall") {
+        if (Test-Path $uninstallScriptPath) {
+            Write-Status "Running $Category uninstallation..."
+            & $uninstallScriptPath
+        } else {
+            Write-Error "Uninstallation script not found for $Category"
+        }
     } else {
-        Write-Error "Installation script for $category not found at $scriptPath"
+        if (Test-Path $scriptPath) {
+            Write-Status "Running $Category installation..."
+            & $scriptPath
+        } else {
+            Write-Error "Installation script not found for $Category"
+        }
     }
 }
 

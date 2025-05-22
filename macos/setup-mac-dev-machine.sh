@@ -26,16 +26,27 @@ display_menu() {
     echo
 }
 
-# Function to run a category installation
+# Function to run a category installation script
 run_category() {
-    local category="$1"
-    local script_path="$(dirname "$0")/${category}/install.sh"
+    local category=$1
+    local action=$2
+    local script_path="$(dirname "$0")/$category/install.sh"
+    local uninstall_script_path="$(dirname "$0")/$category/uninstall.sh"
     
-    if [ -f "$script_path" ]; then
-        print_status "Running ${category} installation..."
-        bash "$script_path"
+    if [ "$action" = "uninstall" ]; then
+        if [ -f "$uninstall_script_path" ]; then
+            print_status "Running $category uninstallation..."
+            bash "$uninstall_script_path"
+        else
+            print_error "Uninstallation script not found for $category"
+        fi
     else
-        print_error "Installation script not found for ${category}"
+        if [ -f "$script_path" ]; then
+            print_status "Running $category installation..."
+            bash "$script_path"
+        else
+            print_error "Installation script not found for $category"
+        fi
     fi
 }
 
