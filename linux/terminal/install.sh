@@ -74,13 +74,41 @@ configure_zsh() {
             git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
         fi
 
-        # Update .zshrc with plugins and thefuck
+        # Create a backup of the original .zshrc
         if [ -f ~/.zshrc ]; then
-            # Add thefuck alias
-            echo 'eval $(thefuck --alias)' >> ~/.zshrc
-            # Update plugins
-            sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting thefuck)/' ~/.zshrc
+            cp ~/.zshrc ~/.zshrc.backup
         fi
+
+        # Create a new .zshrc with our configuration
+        cat > ~/.zshrc << 'EOF'
+# Path to your oh-my-zsh installation
+export ZSH="$HOME/.oh-my-zsh"
+
+# Theme
+ZSH_THEME="robbyrussell"
+
+# Plugins
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting thefuck)
+
+# Source oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+
+# Add thefuck alias
+eval $(thefuck --alias)
+
+# Set default editor
+export EDITOR='vim'
+
+# Add local bin to PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# History settings
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+EOF
     else
         print_status "oh-my-zsh already installed"
         # Add thefuck alias if not already present
@@ -102,7 +130,7 @@ install_nerd_fonts() {
         if ! dpkg -l | grep -q fonts-nerd-font; then
             print_status "Installing MesloLGM Nerd Font..."
             sudo apt-get update
-            sudo apt-get install -y fonts-nerd-font
+            sudo apt-get install -y fonts-nerd-font-meslo
         else
             print_status "Nerd Fonts already installed"
         fi

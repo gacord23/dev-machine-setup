@@ -21,43 +21,65 @@ append_if_missing() {
   grep -q "$value" "$ZSHRC" || echo "export $var=\"$value:\$$var\"" >> "$ZSHRC"
 }
 
-# Homebrew (Linuxbrew)
-if command -v brew >/dev/null 2>&1; then
-  BREW_PREFIX="$(brew --prefix)"
-  print_status "Homebrew installed."
+# Check for essential development tools
+check_command() {
+  local cmd="$1"
+  if command -v "$cmd" >/dev/null 2>&1; then
+    print_status "$cmd installed."
+  else
+    print_warning "$cmd not found!"
+  fi
+}
+
+# Check essential tools
+check_command "git"
+check_command "curl"
+check_command "wget"
+check_command "python3"
+check_command "pip3"
+check_command "node"
+check_command "npm"
+check_command "volta"
+
+# Check for terminal emulators
+check_command "gnome-terminal"
+check_command "konsole"
+check_command "alacritty"
+check_command "kitty"
+
+# Check for oh-my-zsh
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  print_status "oh-my-zsh installed."
 else
-  BREW_PREFIX="/home/linuxbrew/.linuxbrew"
-  print_warning "Homebrew not found! Using default prefix: $BREW_PREFIX"
+  print_warning "oh-my-zsh not found!"
 fi
 
-# pyenv
-if command -v pyenv >/dev/null 2>&1; then
-  print_status "pyenv installed."
+# Check for zsh plugins
+if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
+  print_status "zsh-autosuggestions plugin installed."
 else
-  print_warning "pyenv not found!"
+  print_warning "zsh-autosuggestions plugin not found!"
 fi
 
-# vips/glib
-GLIB_PREFIX="$(brew --prefix glib 2>/dev/null || echo "$BREW_PREFIX")"
-VIPS_PREFIX="$(brew --prefix vips 2>/dev/null || echo "$BREW_PREFIX")"
-GLIB_INCLUDE1="$GLIB_PREFIX/include/glib-2.0"
-GLIB_INCLUDE2="$GLIB_PREFIX/lib/glib-2.0/include"
-VIPS_INCLUDE="$VIPS_PREFIX/include"
+if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
+  print_status "zsh-syntax-highlighting plugin installed."
+else
+  print_warning "zsh-syntax-highlighting plugin not found!"
+fi
 
-export CPLUS_INCLUDE_PATH="$GLIB_INCLUDE1:$GLIB_INCLUDE2:$VIPS_INCLUDE:$BREW_PREFIX/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
-export LIBRARY_PATH="$BREW_PREFIX/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
-export PKG_CONFIG_PATH="$BREW_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-export CXXFLAGS="-I$GLIB_INCLUDE1 -I$GLIB_INCLUDE2 -I$VIPS_INCLUDE -I$BREW_PREFIX/include ${CXXFLAGS:-}"
-export LDFLAGS="-L$BREW_PREFIX/lib ${LDFLAGS:-}"
+# Check for thefuck
+if command -v thefuck >/dev/null 2>&1; then
+  print_status "thefuck installed."
+else
+  print_warning "thefuck not found!"
+fi
 
-append_if_missing CPLUS_INCLUDE_PATH "$GLIB_INCLUDE1"
-append_if_missing CPLUS_INCLUDE_PATH "$GLIB_INCLUDE2"
-append_if_missing CPLUS_INCLUDE_PATH "$VIPS_INCLUDE"
-append_if_missing CPLUS_INCLUDE_PATH "$BREW_PREFIX/include"
-append_if_missing LIBRARY_PATH "$BREW_PREFIX/lib"
-append_if_missing PKG_CONFIG_PATH "$BREW_PREFIX/lib/pkgconfig"
-append_if_missing CXXFLAGS "-I$GLIB_INCLUDE1 -I$GLIB_INCLUDE2 -I$VIPS_INCLUDE -I$BREW_PREFIX/include"
-append_if_missing LDFLAGS "-L$BREW_PREFIX/lib"
+# Check for Nerd Fonts
+if fc-list | grep -q "MesloLGM Nerd Font"; then
+  print_status "MesloLGM Nerd Font installed."
+else
+  print_warning "MesloLGM Nerd Font not found!"
+fi
 
 # Print summary
 print_status "Verification complete."
