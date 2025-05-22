@@ -14,7 +14,7 @@ install_nerd_fonts() {
         if ! dpkg -l | grep -q fonts-nerd-font; then
             print_status "Installing MesloLGM Nerd Font..."
             sudo apt-get update
-            sudo apt-get install -y fonts-nerd-font
+            sudo apt-get install -y fonts-nerd-font-meslo
         else
             print_status "Nerd Fonts already installed"
         fi
@@ -73,14 +73,18 @@ install_cursor() {
         print_status "Installing Cursor..."
         if command_exists apt-get; then
             # Debian/Ubuntu
-            wget -qO- https://download.cursor.sh/linux/appImage/x64/cursor-latest.AppImage -O cursor.AppImage
-            chmod +x cursor.AppImage
-            sudo mv cursor.AppImage /usr/local/bin/cursor
+            print_status "Downloading Cursor AppImage..."
+            wget https://download.cursor.sh/linux/appImage/x64/cursor-latest.AppImage -O /tmp/cursor.AppImage
+            chmod +x /tmp/cursor.AppImage
+            sudo mv /tmp/cursor.AppImage /usr/local/bin/cursor
+            print_status "Cursor installed successfully"
         elif command_exists dnf; then
             # Fedora/RHEL
-            wget -qO- https://download.cursor.sh/linux/appImage/x64/cursor-latest.AppImage -O cursor.AppImage
-            chmod +x cursor.AppImage
-            sudo mv cursor.AppImage /usr/local/bin/cursor
+            print_status "Downloading Cursor AppImage..."
+            wget https://download.cursor.sh/linux/appImage/x64/cursor-latest.AppImage -O /tmp/cursor.AppImage
+            chmod +x /tmp/cursor.AppImage
+            sudo mv /tmp/cursor.AppImage /usr/local/bin/cursor
+            print_status "Cursor installed successfully"
         elif command_exists pacman; then
             # Arch Linux
             yay -S --noconfirm cursor
@@ -307,8 +311,4 @@ for choice in "${selected[@]}"; do
     esac
 done
 
-print_status "IDE installation complete!"
-print_status "Next steps:"
-print_status "  - For LazyVim: Run 'nvim' to complete the setup and wait for plugins to install"
-print_status "  - For VSCode: Install your preferred extensions"
-print_status "  - For WebStorm/IntelliJ/PyCharm: Configure your preferred settings" 
+print_status "IDE installation complete!" 

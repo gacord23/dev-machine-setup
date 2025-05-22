@@ -16,7 +16,8 @@ run_category() {
     fi
 }
 
-# Always run baseline first
+# Run baseline first and only once
+print_status "Running baseline installation..."
 bash "$(dirname "$0")/baseline/install.sh"
 
 # Present menu for other categories (excluding baseline)
@@ -65,17 +66,21 @@ while true; do
         esac
     done
 
-    print_status "Setup complete!"
-    print_status "Next steps:"
-    print_status "  - Restart your terminal to ensure all changes take effect"
-    print_status "  - If you installed Docker Engine, make sure the service is running"
-    print_status "  - If you installed Colima, you can manage it using the 'colima' command"
-    print_status "  - If you installed LazyVim, run 'nvim' to complete the setup"
-    print_status "  - If you installed oh-my-zsh, you may want to customize your .zshrc"
-    print_status "  - If you installed Git tools, make sure to configure your Git identity"
-    print_status "  - If you installed GitHub CLI, authenticate with 'gh auth login'"
+    # Ask if user wants to install more categories
+    read -p "Would you like to install more categories? (y/n): " more_choice
+    if [[ ! $more_choice =~ ^[Yy]$ ]]; then
+        print_status "Setup complete!"
+        print_status "Next steps:"
+        print_status "  - Restart your terminal to ensure all changes take effect"
+        print_status "  - If you installed Docker Engine, make sure the service is running"
+        print_status "  - If you installed Colima, you can manage it using the 'colima' command"
+        print_status "  - If you installed LazyVim, run 'nvim' to complete the setup"
+        print_status "  - If you installed oh-my-zsh, you may want to customize your .zshrc"
+        print_status "  - If you installed Git tools, make sure to configure your Git identity"
+        print_status "  - If you installed GitHub CLI, authenticate with 'gh auth login'"
 
-    # Always run finishup/verify.sh at the end
-    bash "$(dirname "$0")/finishup/verify.sh"
-    exit 0
+        # Always run finishup/verify.sh at the end
+        bash "$(dirname "$0")/finishup/verify.sh"
+        exit 0
+    fi
 done 
