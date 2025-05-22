@@ -60,12 +60,6 @@ while true; do
     # Convert comma-separated input to array
     IFS=',' read -ra CHOICE_ARRAY <<< "$choices"
 
-    # Run baseline first if this is an installation (not uninstall)
-    if [ "$UNINSTALL" = false ]; then
-        print_status "Running baseline installation..."
-        bash "$(dirname "$0")/baseline/install.sh"
-    fi
-
     # Process each choice
     for choice in "${CHOICE_ARRAY[@]}"; do
         case $choice in
