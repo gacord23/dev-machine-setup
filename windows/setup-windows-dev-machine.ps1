@@ -4,6 +4,11 @@
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 . "$scriptPath\..\common\utils.ps1"
 
+# Parse command line arguments
+param(
+    [switch]$Uninstall
+)
+
 # Function to print status messages
 function Write-Status {
     param([string]$Message)
@@ -306,8 +311,11 @@ function Run-Category {
     }
 }
 
-# Always run baseline first
-& "$PSScriptRoot\baseline\install.ps1"
+# Run baseline first and only once (but only for installation, not uninstallation)
+if (-not $Uninstall) {
+    Write-Status "Running baseline installation..."
+    & "$PSScriptRoot\baseline\install.ps1"
+}
 
 # Present menu for other categories (excluding baseline)
 Write-Status "Windows Development Machine Setup"

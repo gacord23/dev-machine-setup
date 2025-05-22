@@ -9,8 +9,25 @@ check_os "Darwin"
 print_status "Detected macOS"
 print_status "Starting macOS Development Machine Setup"
 
-# Always run baseline first
-bash "$(dirname "$0")/baseline/install.sh"
+# Parse command line arguments
+UNINSTALL=false
+while getopts "u" opt; do
+    case $opt in
+        u)
+            UNINSTALL=true
+            ;;
+        \?)
+            print_error "Invalid option: -$OPTARG"
+            exit 1
+            ;;
+    esac
+done
+
+# Run baseline first and only once (but only for installation, not uninstallation)
+if [ "$UNINSTALL" = false ]; then
+    print_status "Running baseline installation..."
+    bash "$(dirname "$0")/baseline/install.sh"
+fi
 
 # Function to display menu
 display_menu() {
