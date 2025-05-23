@@ -1,20 +1,82 @@
-## Legacy Node-gyp Compatibility (Python 2.7)
+# Development Machine Setup
 
-Some older Node.js native modules require Python 2.7 for installation (e.g., if you see errors about 'rU' mode or Python compatibility during `yarn install` or `npm install`).
+This repository contains scripts to automate the setup of development environments across macOS, Linux, and Windows. It helps you install and configure common development tools, IDEs, and utilities with a simple menu-driven interface.
 
-To temporarily switch your shell to use Python 2.7 for these legacy installs, use the provided script:
+## Features
 
-```sh
-source macos/baseline/legacy-python2-env.sh
-```
+- Cross-platform support (macOS, Linux, Windows)
+- Modular installation of development tools
+- Easy uninstallation of components
+- Consistent setup across machines
+- Support for:
+  - Git tools (Git, LazyGit, GitHub CLI, Git LFS)
+  - Docker (Docker Desktop/Engine, Colima)
+  - IDEs (VSCode, Cursor, WebStorm, LazyVim)
+  - Terminal tools (iTerm2, Warp, oh-my-zsh)
+  - And more...
 
-This will:
-- Set `pyenv shell` to Python 2.7.18
-- Set `npm_config_python` to Python 2.7
-- Print instructions for returning to your previous Python version
+## Quick Start
 
-**After running your legacy install, return to your normal environment with:**
-```sh
-pyenv shell --unset
-```
-or simply open a new terminal window. 
+### macOS/Linux
+
+1. Run the setup script:
+   ```bash
+   ./setup.sh
+   ```
+
+2. To uninstall components:
+   ```bash
+   ./setup.sh -u
+   ```
+
+### Windows
+
+1. Run the setup script:
+   ```powershell
+   .\setup.ps1
+   ```
+
+2. To uninstall components:
+   ```powershell
+   .\setup.ps1 -Uninstall
+   ```
+
+## What Gets Installed
+
+### Baseline Tools
+- Package managers (Homebrew, apt, Chocolatey)
+- Build essentials
+- Common utilities
+
+### Git Tools
+- Git
+- LazyGit
+- GitHub CLI
+- Git LFS
+- GitKraken
+
+### Docker
+- Docker Desktop (macOS/Windows)
+- Docker Engine (Linux)
+- Colima (macOS/Linux)
+- Kubernetes tools
+
+### IDEs and Editors
+- VSCode
+- Cursor
+- WebStorm
+- LazyVim
+- IntelliJ IDEA
+- PyCharm
+- Sublime Text
+
+### Terminal Tools
+- iTerm2 (macOS)
+- Warp (macOS)
+- Windows Terminal (Windows)
+- oh-my-zsh
+- Custom shell configurations
+
+## Contributing
+
+Feel free to submit issues and enhancement requests! 
